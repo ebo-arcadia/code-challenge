@@ -23,7 +23,17 @@
 import re
 
 
-def sort_words_with_init(sentence):
+def check_if_num(word):
+    for letter in re.findall(r'\d+', word):
+        # for letter in word:
+        #     if letter.isdigit(): return int(letter)
+        return int(letter)
+    return None
+
+
+def order_words_with_int(sentence):
+    if not sentence:
+        return ""
     words = sentence.split()
     ordered_words = sorted(words, key=check_if_num)
     joined_ordered_sentence = " ".join(ordered_words)
@@ -31,12 +41,15 @@ def sort_words_with_init(sentence):
     return joined_ordered_sentence
 
 
-def check_if_num(word):
-    for letter in re.findall(r'\d+', word):
-        # for letter in word:
-        #     if letter.isdigit():
-        return int(letter)
-    return None
+def refactor_order_words_with_int(sentence):
+    # refactor for efficiency
+    if not sentence:
+        return ""
+    print(' '.join(sorted(sentence.split(), key=check_if_num)))
+    return ' '.join(sorted(sentence.split(), key=check_if_num))
 
 
-sort_words_with_init("is2 Thi1s T4est 3a")
+order_words_with_int("is2 Thi1s T4est 3a")
+order_words_with_int("4of Fo1r pe6ople g3ood th5e the2")
+refactor_order_words_with_int("is2 Thi1s T4est 3a")
+refactor_order_words_with_int("4of Fo1r pe6ople g3ood th5e the2")
