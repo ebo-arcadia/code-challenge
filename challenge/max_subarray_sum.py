@@ -21,6 +21,21 @@
 # finish iteration
 # keep the largest total and return it
 
+def initial_brutal_force_solution(arr):
+    max_sub_arr = 0
+    curr_max = 0
+    for i in range(0, len(arr)):
+        curr_max += arr[i]
+        if curr_max < 0:
+            max_sub_arr = 0
+        elif curr_max > max_sub_arr:
+            max_sub_arr = curr_max
+        elif len(arr) != 0 and arr[i] > 0:
+            max_sub_arr = curr_max
+        elif len(arr) == 0 or arr[i] < 0:
+            max_sub_arr = 0
+    return curr_max
+
 
 def max_subarray_sum_finder(array):
     current_max = 0
@@ -28,22 +43,37 @@ def max_subarray_sum_finder(array):
     for i in range(0, len(array)):
         current_max = max(array[i], current_max + array[i])
         max_till_now = max(current_max, max_till_now)
-        # max_ending_here = max_ending_here + array[i]
-        # if len(array) != 0 and array[i] > 0:
-        #     total += array[i]
-        # elif len(array) == 0 or array[i] < 0:
-        #     return total
-        # if max_ending_here < 0:
-        #     max_ending_here = 0
-        # elif max_till_now < max_ending_here:
-        #     max_till_now = max_ending_here
     return max_till_now
+
+
+def efficient_max_finder(array):
+    max_subarray, curr_max = 0, 0
+    for num in array:
+        curr_max += num
+        if curr_max < 0:
+            curr_max = 0
+        if curr_max > max_subarray:
+            max_subarray = curr_max
+    return curr_max
 
 
 test_array1 = [1, 2, 3]
 test_array2 = []
 test_array3 = [1, -1, 0, 1, 2]
 
+print("testing brutal force solution: ")
+print('all numbers in array are positive: ', initial_brutal_force_solution(test_array1))
+print('empty array: ', initial_brutal_force_solution(test_array2))
+print('fixed positive and negative numbers: ', initial_brutal_force_solution(test_array3))
+
+print("testing max subarray max finder: ")
 print('all numbers in array are positive: ', max_subarray_sum_finder(test_array1))
 print('empty array: ', max_subarray_sum_finder(test_array2))
 print('fixed positive and negative numbers: ', max_subarray_sum_finder(test_array3))
+
+print("testing efficient max finder: ")
+print('all numbers in array are positive: ', efficient_max_finder(test_array1))
+print('empty array: ', efficient_max_finder(test_array2))
+print('fixed positive and negative numbers: ', efficient_max_finder(test_array3))
+
+
