@@ -22,10 +22,44 @@
 #
 # (Condition 2) not fulfilled).
 
+# pseudocode
+# if the condition is met (height, bounce_rate, window)
+#   set variable current_height stores current_height
+#   set variable count stores total times ball passing the window
+#       while current_height is greater than the window
+#           recursively add times ball passing the window
+#           recursively reset new height stores in current_height
+#       return count
+# else:
+# invalid and return -1
 
-def bouncing_ball(h, bounce, window):
-    if h > 0 and 1 > bounce > 0 and window < h:
-        return h
+
+def bouncing_ball(height, bounce_rate, window):
+    if height > 0 and 1 > bounce_rate > 0 and window < height:
+        count = 1
+        height = height * bounce_rate
+        while height > window:
+            count += 2
+            height = height * bounce_rate
+        return count
     else:
         return -1
 
+
+def efficient_bouncing_ball(h, b, w):
+    if not h > 0 and 1 > b > 0 and h > w:
+        return -1
+    count = 0
+    while h > w:
+        count += 1
+        h *= b
+        if h > w:
+            count += 1
+    return count or -1
+
+
+h = 10
+b = 0.66
+w = 1.5
+print("testing bouncing_ball: ", bouncing_ball(height=h, bounce_rate=b, window=w))
+print("testing efficient_bouncing_ball: ", efficient_bouncing_ball(h=h, b=b, w=w))
