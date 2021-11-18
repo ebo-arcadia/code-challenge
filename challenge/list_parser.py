@@ -44,9 +44,29 @@ def list_parser(array):
     return result
 
 
-# print(list_parser([]))
-# print(list_parser(["Peter"]))
-# print(list_parser(["Jacob", "Alex"]))
-# print(list_parser(["Max", "John", "Mark"]))
+print(list_parser([]))
+print(list_parser(["Peter"]))
+print(list_parser(["Jacob", "Alex"]))
+print(list_parser(["Max", "John", "Mark"]))
 print(list_parser(["Alex", "Jacob", "Mark", "Max"]))
 
+
+def cleaner_list_parser(array):
+    if len(array) == 0:
+        return 'no one likes this'
+    elif len(array) == 1:
+        return '%s likes this' % array[0]
+    elif len(array) == 2:
+        return '%s and %s like this' % (array[0], array[1])
+    elif len(array) == 3:
+        return '%s, %s and %s like this' % (array[0], array[1], array[2])
+    else:
+        return '%s, %s and %s others like this' % (array[0], array[1], len(array) - 2)
+
+
+print("testing cleaner_list_parser: ")
+print(cleaner_list_parser([]))
+print(cleaner_list_parser(["Peter"]))
+print(cleaner_list_parser(["Jacob", "Alex"]))
+print(cleaner_list_parser(["Max", "John", "Mark"]))
+print(cleaner_list_parser(["Alex", "Jacob", "Mark", "Max"]))
