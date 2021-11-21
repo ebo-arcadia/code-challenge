@@ -50,7 +50,28 @@ def dig_pow(n, p):
         return -1
 
 
+def clean_dig_pow(n, p):
+    total = 0
+    for d in str(n):
+        total += int(d) ** p
+        p += 1
+    if total % n == 0:
+        result = total / n
+        print(result)
+        return result
+    else:
+        print("k does not exist")
+        return -1
+
+
+print("testing dig_pow method: ")
 dig_pow(89, 1)
 dig_pow(695, 2)
 dig_pow(46288, 3)
 dig_pow(92, 1)
+
+print("testing clean_dig_pow method: ")
+clean_dig_pow(89, 1)
+clean_dig_pow(695, 2)
+clean_dig_pow(46288, 3)
+clean_dig_pow(92, 1)
