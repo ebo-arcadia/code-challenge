@@ -4,7 +4,7 @@
 # abc - Abstract Base class
 # ABCMeta - Inbuilt special class
 # abstractmethod - Indicator to specify method is abstract.
-from abc import ABCMeta, abstractmethod, ABC
+from abc import ABCMeta, abstractmethod
 
 
 class Person(metaclass=ABCMeta):

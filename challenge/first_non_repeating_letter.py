@@ -10,26 +10,28 @@
 # If a string contains all repeating characters, it should return an empty string ("") or None -- see sample tests.
 
 # pseudocode
-# iterate the string
-#   ignore case sensitive
-# count numbers of each number
-# if count of the 1st number
-#   return the number
-# if occurrence of each letters is more than 1
-#   return empty string
+
+# create a dictionary with key for a character and value as the occurrence
+# create a copy of the string ignoring case sensitive
+# if char is not in dict, store it in dictionary with value of 1
+# if char is in dict, increments value as occurrence in dict
+# check if the number of occurrences is one, look for the original one in original string using the same index
+# if count of the 1st character is 1
+#   return the character
 
 def first_non_repeating_letter(str):
     for i in range(len(str)):
         if len(str) == 0:
-            break
+            return ''
         letter = str[0]
         if letter == ' ' or letter == '\t':
             continue
         # using count method
-        print(letter + ' (using count method) - ', str.count(letter))
-        if str.count(letter) > 1:
+        count_nums = str.count(letter)
+        print(letter + ' (using count method) - ', count_nums)
+        if count_nums > 1:
             return None
-        if str.count(letter) == 1:
+        if count_nums == 1:
             return letter
         # using counter
         counter = 1
@@ -40,16 +42,26 @@ def first_non_repeating_letter(str):
         print(letter + ' - ', counter)
 
 
-# def clean_first_non_repeating_letter(string):
-#     first_letter = [x for x in str if string.count(x) == 1]
-#     return first_letter
+def clean_first_non_repeating_letter(string):
+    str_counts = {}
+    lower_string = string.lower()
+    for char in lower_string:
+        if char in str_counts:
+            str_counts[char] = str_counts[char] + 1
+        else:
+            str_counts[char] = 1
+    for char in lower_string:
+        if char in str_counts and str_counts[char] == 1:
+            index = lower_string.find(char)
+            return string[index]
+    return ''
 
 
 if __name__ == "__main__":
-    string_1 = "Mississippi"
-    first_non_repeating_letter(string_1)
+    string_1 = "mississippi"
+    print(first_non_repeating_letter(string_1))
     string_2 = "apple"
-    first_non_repeating_letter(string_2)
+    print(first_non_repeating_letter(string_2))
     string_3 = "ppyytthhoonn"
-    first_non_repeating_letter(string_3)
-    # clean_first_non_repeating_letter(string_1)
+    print('should return none or empty string: ', first_non_repeating_letter(string_3))
+    print(clean_first_non_repeating_letter(string_1))
