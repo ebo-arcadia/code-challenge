@@ -19,30 +19,30 @@
 # if count of the 1st character is 1
 #   return the character
 
-def first_non_repeating_letter(str):
-    for i in range(len(str)):
-        if len(str) == 0:
-            return ''
-        letter = str[0]
-        if letter == ' ' or letter == '\t':
-            continue
-        # using count method
-        count_nums = str.count(letter)
-        print(letter + ' (using count method) - ', count_nums)
-        if count_nums > 1:
-            return None
-        if count_nums == 1:
-            return letter
-        # using counter
-        counter = 1
-        for j in range(1, len(str)):
-            if letter == str[j]:
-                counter += 1
-        str = str.replace(letter, '').strip()
-        print(letter + ' - ', counter)
+# def first_non_repeating_letter(str):
+#     for i in range(len(str)):
+#         if len(str) == 0:
+#             return ''
+#         letter = str[0]
+#         if letter == ' ' or letter == '\t':
+#             continue
+#         # using count method
+#         count_nums = str.count(letter)
+#         print(letter + ' (using count method) - ', count_nums)
+#         if count_nums > 1:
+#             return None
+#         if count_nums == 1:
+#             return letter
+#         # using counter
+#         counter = 1
+#         for j in range(1, len(str)):
+#             if letter == str[j]:
+#                 counter += 1
+#         str = str.replace(letter, '').strip()
+#         print(letter + ' - ', counter)
 
 
-def clean_first_non_repeating_letter(string):
+def first_non_repeating_letter(string):
     str_counts = {}
     lower_string = string.lower()
     for char in lower_string:
@@ -57,11 +57,20 @@ def clean_first_non_repeating_letter(string):
     return ''
 
 
+def clean_non_repeating_letter(str):
+    for x in str:
+        if str.lower().count(x.lower()) == 1:
+            return x
+    return ''
+
+
 if __name__ == "__main__":
     string_1 = "mississippi"
     print(first_non_repeating_letter(string_1))
+    print(clean_non_repeating_letter(string_1))
     string_2 = "apple"
     print(first_non_repeating_letter(string_2))
+    print(clean_non_repeating_letter(string_2))
     string_3 = "ppyytthhoonn"
     print('should return none or empty string: ', first_non_repeating_letter(string_3))
-    print(clean_first_non_repeating_letter(string_1))
+    print('should return none or empty string: ', clean_non_repeating_letter(string_3))
