@@ -17,15 +17,24 @@
 
 # pseudocode
 # calculate factorial with the given number
-# count total of zeros
-# return the total
+# traverse factorial num return occurrence of zeros starting from the right
 
 
-def trailing_zeros(nums):
+def trailing_zeros(num):
+    num = int(num)
     factorial = 1
-    for digit in str(nums):
-        factorial *= int(digit)
-    return factorial
+    zeros = {}
+    for i in range(1, num+1):
+        # print(i)
+        factorial *= i
+        print(factorial)
+        reversed_factorial = str(factorial)[::-1]
+        print("factory reversed: ", reversed_factorial)
+    for d in map(int, str(factorial)[::-1]):
+        while d == 0:
+            zeros[d] = zeros[d] + 1
+            break
+    return zeros
 
 
-print(trailing_zeros(123))
+print(trailing_zeros(6))
