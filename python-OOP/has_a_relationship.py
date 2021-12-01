@@ -15,6 +15,10 @@ class Tenant:
         self.name = name
         self.salary = salary
 
+    @staticmethod
+    def pay_rent():
+        return "The tenant has paid their rent."
+
 
 tenantA = Tenant("John", 50000)
 house = House("1610 BayRidge", 1200, tenantA)
@@ -22,6 +26,7 @@ print("house obj address: ", house.address)
 print("house obj rent: ", house.rent)
 print("house obj tenant name: ", house.tenant.name)
 print("house obj tenant salary: ", house.tenant.salary)
+print("pay rent method in Tenant class passed as part of the instance variable tenant: ", house.tenant.pay_rent())
 
 tenantB = Tenant("Patrik", 100000)
 house = House("1010 Bush St", 900, tenantB)
