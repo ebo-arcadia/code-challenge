@@ -24,10 +24,24 @@
 # D	500
 # M	1000
 
+
 class RomanNumerals:
 
-    def to_roman(val):
-        return ''
+    @staticmethod
+    def to_roman(num):
+        dictionary = {1: "I", 4: "IV", 5: "V", 10: "X", 50: "L", 100: "C", 500: "D", 1000: "M"}
+        if num in dictionary.keys():
+            return dictionary[num]
+        else:
+            return "something else"
 
     def from_roman(roman_num):
         return 0
+
+
+roman_numerals = RomanNumerals()
+print(roman_numerals.to_roman(1))
+print(roman_numerals.to_roman(4))
+print(roman_numerals.to_roman(5))
+print(roman_numerals.to_roman(1000))
+print(roman_numerals.to_roman(2))
