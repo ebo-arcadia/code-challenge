@@ -24,6 +24,9 @@
 # D	500
 # M	1000
 
+# pseudocode
+
+
 
 class RomanNumerals:
 
