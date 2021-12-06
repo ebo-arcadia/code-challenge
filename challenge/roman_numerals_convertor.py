@@ -36,8 +36,8 @@ import math
 class RomanNumerals:
 
     @staticmethod
-    def to_roman(num):
-        dictionary = \
+    def to_roman(numeral):
+        roman_numerals_dict = \
             {
                 1: "I",
                 4: "IV",
@@ -55,17 +55,36 @@ class RomanNumerals:
             }
 
         divisor = 1
-        while num >= divisor:
+        while numeral > divisor:
+            # divisor = (divisor * (10 ** len(str(numeral)))) / 10
+            # significant_num = int(numeral / divisor)
+            # print(significant_num)
+            # floated = float(numeral / divisor)
+            # reminder = round(floated - significant_num, len(str(numeral)))
+            # print(reminder)
+            # divisor = divisor / 10
+            # numeral = reminder * divisor * 10
+            # print(numeral)
             divisor *= 10
-
         divisor /= 10
+
         result = ""
 
-        while num:
-            significant_num = int(num / divisor)
-            result += str(significant_num)
+        while numeral:
+            significant_num = int(numeral / divisor)  # extract significant number
+            # if significant_num in roman_numerals_dict.keys():
+            #     result = roman_numerals_dict[significant_num]
 
-            num = math.floor(num % divisor)
+            if significant_num < 4:
+                result += roman_numerals_dict[divisor] * significant_num
+
+            elif significant_num == 4:
+                result += roman_numerals_dict[significant_num]
+
+            else:
+                return "out of range"
+
+            numeral = math.floor(numeral % divisor)
             divisor /= 10
 
         return result
@@ -89,9 +108,9 @@ class RomanNumerals:
 
 roman_numerals = RomanNumerals()
 # print(roman_numerals.to_roman(1))
-# print(roman_numerals.to_roman(4))
+print(roman_numerals.to_roman(4))
 # print(roman_numerals.to_roman(5))
 # print(roman_numerals.to_roman(1000))
 # print(roman_numerals.to_roman(2))
 # print(roman_numerals.to_roman(9))
-print(roman_numerals.to_roman(110))
+print(roman_numerals.to_roman(3213))
