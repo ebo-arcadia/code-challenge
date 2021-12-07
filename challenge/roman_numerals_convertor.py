@@ -55,7 +55,7 @@ class RomanNumerals:
             }
 
         divisor = 1
-        while numeral > divisor:
+        while numeral >= divisor:
             # divisor = (divisor * (10 ** len(str(numeral)))) / 10
             # significant_num = int(numeral / divisor)
             # print(significant_num)
@@ -73,13 +73,19 @@ class RomanNumerals:
         while numeral:
             significant_num = int(numeral / divisor)  # extract significant number
             # if significant_num in roman_numerals_dict.keys():
-            #     result = roman_numerals_dict[significant_num]
+            #     result += roman_numerals_dict[significant_num]
 
-            if significant_num < 4:
+            if significant_num <= 3:
                 result += roman_numerals_dict[divisor] * significant_num
 
             elif significant_num == 4:
-                result += roman_numerals_dict[significant_num]
+                result += roman_numerals_dict[divisor] + roman_numerals_dict[divisor * 5]
+
+            elif 5 <= significant_num <= 8:
+                result += roman_numerals_dict[divisor * 5] + roman_numerals_dict[divisor] * (significant_num - 5)
+
+            elif significant_num == 9:
+                result += roman_numerals_dict[divisor] + roman_numerals_dict[divisor * 10]
 
             else:
                 return "out of range"
@@ -107,10 +113,18 @@ class RomanNumerals:
 
 
 roman_numerals = RomanNumerals()
-# print(roman_numerals.to_roman(1))
+print(roman_numerals.to_roman(1))
+print(roman_numerals.to_roman(2))
 print(roman_numerals.to_roman(4))
-# print(roman_numerals.to_roman(5))
-# print(roman_numerals.to_roman(1000))
-# print(roman_numerals.to_roman(2))
-# print(roman_numerals.to_roman(9))
+print(roman_numerals.to_roman(5))
+print(roman_numerals.to_roman(6))
+print(roman_numerals.to_roman(7))
+print(roman_numerals.to_roman(8))
+print(roman_numerals.to_roman(9))
+print(roman_numerals.to_roman(10))
+print(roman_numerals.to_roman(21))
+print(roman_numerals.to_roman(40))
+print(roman_numerals.to_roman(123))
+print(roman_numerals.to_roman(1000))
+print(roman_numerals.to_roman(1990))
 print(roman_numerals.to_roman(3213))
