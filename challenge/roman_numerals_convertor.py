@@ -25,11 +25,18 @@
 # M	1000
 
 # pseudocode
-# 1. extract the main significant number
-#     1.1 divide the param num with the length of num
-#     1.2 store the result to a variable
-#     1.3 append the roman char corresponding to the variable value according to the dict
-# 2. repeat the above operation till the param num becomes 0
+# method 1
+# compare the given num with the base num in the roman numerals dictionary
+# divide the number by the corresponding base num times the quotient num of times
+# recursively execute the same operation to the reminder till the given num becomes zero
+# method 2
+# the first digit is considered as the significant num
+# set a divisor such as 1000, 100, 10, 1
+# divide the given number with the corresponding divisor
+# extract the significant num
+# find corresponding roman char as value per significant num as the key
+# conditionally append roman char
+
 import math
 
 
@@ -37,7 +44,7 @@ class RomanNumerals:
 
     @staticmethod
     def to_roman(numeral):
-        roman_numerals_dict = \
+        numerals_roman_dict = \
             {
                 1: "I",
                 4: "IV",
@@ -76,16 +83,16 @@ class RomanNumerals:
             #     result += roman_numerals_dict[significant_num]
 
             if significant_num <= 3:
-                result += roman_numerals_dict[divisor] * significant_num
+                result += numerals_roman_dict[divisor] * significant_num
 
             elif significant_num == 4:
-                result += roman_numerals_dict[divisor] + roman_numerals_dict[divisor * 5]
+                result += numerals_roman_dict[divisor] + numerals_roman_dict[divisor * 5]
 
             elif 5 <= significant_num <= 8:
-                result += roman_numerals_dict[divisor * 5] + roman_numerals_dict[divisor] * (significant_num - 5)
+                result += numerals_roman_dict[divisor * 5] + numerals_roman_dict[divisor] * (significant_num - 5)
 
             elif significant_num == 9:
-                result += roman_numerals_dict[divisor] + roman_numerals_dict[divisor * 10]
+                result += numerals_roman_dict[divisor] + numerals_roman_dict[divisor * 10]
 
             else:
                 return "out of range"
@@ -95,24 +102,58 @@ class RomanNumerals:
 
         return result
 
-        # if num in dictionary.keys():
-        #     return dictionary[num]
-        # elif 1 < num < 4:
-        #     roman_str = ""
-        #     roman_char = roman_str.ljust(num + len(roman_str), "I")
-        #     return roman_char
-        # elif 5 < num < 9:
-        #     roman_str = "V"
-        #     roman_char = roman_str.ljust((num - 5) + len(roman_str), "I")
-        #     return roman_char
-        # else:
-        #     return "invalid num input"
 
-    def from_roman(roman_num):
-        return 0
+    def int_to_roman_two_lists(self, num):
+        numerals_map = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
+        roman_char = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"]
+        result = ''
+
+        counter = 0
+        while num > 0:
+            for i in range(num // numerals_map[counter]):
+                result += roman_char[counter]
+                num -= numerals_map[counter]
+            counter += 1
+        return result
+
+    def int_to_roman_loop_over_pairs(self, num):
+        numerals_roman_pairs = [(1000, 'M'), (900, 'CM'), (500, 'D'), (400, 'CD'), (100, 'C'), (90, 'XC'),
+           (50, 'L'), (40, 'XL'), (10, 'X'), (9, 'IX'), (5, 'V'), (4, 'IV'), (1, 'I')]
+
+        result = ''
+
+        while num > 0:
+            for numeral, roman_char in numerals_roman_pairs:
+                while num >= numeral:
+                    result += roman_char
+                    num -= numeral
+        return result
+
+    def roman_to_it(self, roman):
+        roman_numerals_dict = {
+            "I": 1,
+            "V": 5,
+            "X": 10,
+            "L": 50,
+            "C": 100,
+            "D": 500,
+            "M": 1000
+        }
+
+        converted_num = 0
+        roman = roman.replace("IV", "IIII").replace("IX", "VIIII")
+        roman = roman.replace("XL", "XXXX").replace("XC", "LXXXX")
+        roman = roman.replace("CD", "CCCC").replace("CM", "DCCCC")
+
+        for character in roman:
+            converted_num += roman_numerals_dict[character]
+        return converted_num
 
 
 roman_numerals = RomanNumerals()
+print("-----------------------")
+print("testing to_roman: ")
+print("-----------------------")
 print(roman_numerals.to_roman(1))
 print(roman_numerals.to_roman(2))
 print(roman_numerals.to_roman(4))
@@ -128,3 +169,17 @@ print(roman_numerals.to_roman(123))
 print(roman_numerals.to_roman(1000))
 print(roman_numerals.to_roman(1990))
 print(roman_numerals.to_roman(3213))
+print("======================")
+print("testing int_to_roman_two_lists method: ")
+print(roman_numerals.int_to_roman_two_lists(3213))
+print("======================")
+print("testing int_to_roman_loop_over_pairs method: ")
+print(roman_numerals.int_to_roman_loop_over_pairs(321))
+print("======================")
+print("testing roman_to_int method: ")
+print(roman_numerals.roman_to_it("I"))
+print(roman_numerals.roman_to_it("IV"))
+print(roman_numerals.roman_to_it("IX"))
+print(roman_numerals.roman_to_it("XLXLXL"))
+print(roman_numerals.roman_to_it("XCXXX"))
+print(roman_numerals.roman_to_it("CMCDCM"))
