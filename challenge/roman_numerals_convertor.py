@@ -129,7 +129,7 @@ class RomanNumerals:
                     num -= numeral
         return result
 
-    def roman_to_it(self, roman):
+    def roman_to_int(self, roman):
         roman_numerals_dict = {
             "I": 1,
             "V": 5,
@@ -177,9 +177,9 @@ print("testing int_to_roman_loop_over_pairs method: ")
 print(roman_numerals.int_to_roman_loop_over_pairs(321))
 print("======================")
 print("testing roman_to_int method: ")
-print(roman_numerals.roman_to_it("I"))
-print(roman_numerals.roman_to_it("IV"))
-print(roman_numerals.roman_to_it("IX"))
-print(roman_numerals.roman_to_it("XLXLXL"))
-print(roman_numerals.roman_to_it("XCXXX"))
-print(roman_numerals.roman_to_it("CMCDCM"))
+print(roman_numerals.roman_to_int("I"))
+print(roman_numerals.roman_to_int("IV"))
+print(roman_numerals.roman_to_int("IX"))
+print(roman_numerals.roman_to_int("XLXLXL"))
+print(roman_numerals.roman_to_int("XCXXX"))
+print(roman_numerals.roman_to_int("CMCDCM"))
