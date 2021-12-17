@@ -27,4 +27,10 @@ We need not know how a method works internally to invoke it on an object. This i
 
 OOP is never short of magic! You can create attributes and methods in a common class and inherit them in other classes!
 
+### good coding principles
+
+- Check if that functionality is already in a standard Python package.
+- Turn your code into a function (or class or decorator).
+- Write tests for your function.
+- Replace your old code with that function.
 
