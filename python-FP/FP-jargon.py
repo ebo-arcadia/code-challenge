@@ -27,9 +27,10 @@ print("-----------------------")
 # thus moved out of the block in which those variable are defined
 
 multiply_two_nums = lambda x: lambda y: x * y
-multiply_two_and_three = multiply_two_nums(2)
-multiple_ten_again = multiply_two_and_three(10)
-print(multiple_ten_again)
+multiply_two = multiply_two_nums(2)
+print(multiply_two)
+multiple_two_ten = multiply_two(10)
+print(multiple_two_ten)
 
 print("-----------------------")
 
