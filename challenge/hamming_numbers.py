@@ -51,3 +51,4 @@ if __name__ == "__main__":
     solution = PythonSolution()
     nth_hamming = solution.get_n_th_hamming_num(20)
     print(nth_hamming)
+
