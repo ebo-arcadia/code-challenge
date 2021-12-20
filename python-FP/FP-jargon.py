@@ -76,18 +76,22 @@ print("given two args but in sequence, function returns: ", curried_divide)
 
 print("-----------------------")
 
+
 # function composition the act of putting two or more functions together to form a new function in such a way that
 # the output of one function is passed as an input for another function
 
 def add_two(x):
     return x + 2
 
+
 def times_ten(y):
     return y * 10
+
 
 # print the result of composition to first add 2 to a num and then times it with 10
 def add_times_comp(n):
     return times_ten(add_two(n))
+
 
 func_comp = add_times_comp(10)
 print("expected result to be 120: ", func_comp)
@@ -99,6 +103,7 @@ print("-----------------------")
 # in other words, at any point of time in the program, one can save the state of the execution for later
 
 continue_program_with = lambda data: data
+
 
 def find_data(n):
     if n <= 2:
@@ -150,13 +155,35 @@ print("point free style calling function: ", increment_all_free_style)
 print("-----------------------")
 
 
+# predicate
+# it is a function returns true or false for a given value
+
+def predicate(x):
+    return lambda x: type(x) == "str"
 
 
+str_only = filter(predicate, [1, "1", 2, "2", ('a', 'b'), ['x', 10]])
+print(str_only)
 
+print("-----------------------")
 
+# contracts
+# a contract specifics obligations and guarantees of the behaviors from a function or expression at runtime
 
+def throw_error(ex):
+    return ex
 
+# define contract: int -> boolean
+contract = lambda value: True if type(value) is int else throw_error(Exception('contract violated: expect int but get str'))
 
+add1 = lambda num: contract(num) and num + 1
 
+print(add1(2))
+print(add("a word"))
+
+print("-----------------------")
+
+# category (category theory. types are often considered as objects and functions as the morphisms)
+# value - anything can be assigned to a variable
 
 
