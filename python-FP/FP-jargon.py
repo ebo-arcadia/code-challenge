@@ -119,6 +119,41 @@ print("-----------------------")
 
 
 # idempotent
+# it refers to a function does not have side effect with called multiple times with the same input parameters
+# therefore, it makes idempotent safer to retry
+# the get request API is an example of idempotent operation as it returns the same result with the same request
+
+# func(func(x)) = func(x)
+sorted1 = sorted([10, 8, 5, 99, 0])
+print("sort a list one time: ", sorted1)
+sorted_x_times = sorted(sorted(sorted(sorted(sorted1))))
+print("sort a list many time: ", sorted_x_times)
+
+print("-----------------------")
+
+# tacit programming (point-free programming) it is a programming paradigm in which a function definition does not
+# include information about its argument but using combinators and function composition
+# why it is useful?
+# it aims to reduce some argument parameter clutters mapping
+
+map = lambda func: lambda xs: [func(x) for x in xs]
+add = lambda a: lambda b: a + b
+
+# not point-free style as 'nums' is an explicit argument
+increment_all = lambda nums: map(add(1))(nums)
+print("not point free style calling function: ", increment_all)
+
+# points free style as the list is an implicit argument
+increment_all_free_style = map(add(2))
+print("point free style calling function: ", increment_all_free_style)
+
+print("-----------------------")
+
+
+
+
+
+
 
 
 
