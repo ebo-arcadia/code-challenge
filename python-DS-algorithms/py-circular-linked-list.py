@@ -14,6 +14,14 @@
 # then point the pointer of the new last node to the head node in the list
 
 # how to remove a node from a list?
+# algorithms
+# check if the list is empty
+# if list is empty, returns the list is empty
+# if list is not empty, check if the list only has one node, if so, set both head and tail nodes as null
+# if the list has more than one node, calculate the midpoint, stores it in a variable
+# maintain two variables, temp to store the node to be removed, previous to store node before the temp
+# iterate the list till temp reaches the mid point (temp point at the mid point)
+# remove temp so that previous next can point to temp next which point to the next node of temp
 
 class Node:
     # represent node of list
@@ -92,6 +100,32 @@ class LinkedList:
             newNode.next = temp
         self.size = self.size + 1
 
+    def delete_node_mid(self):
+        if self.head == None:
+            return "the list is empty"
+        else:
+            # store middle point in a varaible called count
+            count = self.size // 2 if self.size % 2 == 0 else (self.size + 1) // 2
+            if self.head != self.tail:
+                temp = self.head
+                prev = None
+                for i in range(0, count - 1):
+                    prev = temp
+                    temp = temp.next
+                if prev != None:
+                    # temp is the node to be deleted
+                    # thus, previous node points to the the node next to temp by pointing to temp.next
+                    prev.next = temp.next
+                    # delete the mid point
+                    del temp
+                else:
+                    self.head = self.tail = temp.next
+                    self.tail.next = self.head
+                    del temp
+            # the list only contains one element
+            else:
+                self.head = self.tail = None
+        self.size = self.size - 1
 
     def display(self):
         # define a current that will point to the head
@@ -134,3 +168,7 @@ if __name__ == "__main__":
     list1.add_node_in_mid(1000100001)
     list1.display()
 
+    while list1.head != None:
+        list1.delete_node_mid()
+        print("Updated list: ")
+        list1.display()
