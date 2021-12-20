@@ -172,3 +172,8 @@ if __name__ == "__main__":
         list1.delete_node_mid()
         print("Updated list: ")
         list1.display()
+
+
+# further operations:
+# delete a node from the start of a circular linked list
+# delete a node from the end of a circular linked list
