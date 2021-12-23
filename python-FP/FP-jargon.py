@@ -185,5 +185,23 @@ print("-----------------------")
 
 # category (category theory. types are often considered as objects and functions as the morphisms)
 # value - anything can be assigned to a variable
+# constant - a variable can not be re-assigned once defined
 
+# to revise:
+# functor
+# pointed functor
+# referential transparency
+# equational reasoning
+# lazy evaluation
+# monoid
+# comonad
+# applicative functor
+# morphism
+# setoid
+# semigroup
+# foldable
+# lens
+# type signatures
+# algebraic data type
+# option
 
