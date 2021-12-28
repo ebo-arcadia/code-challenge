@@ -3,6 +3,4 @@ pip
 pytest~=6.2.5
 parse
 flask
-
-
 numpy~=1.21.4
