@@ -6,9 +6,10 @@ from pathlib import Path
 # an object of Image type is returned and stored in img variable)
 
 path = Path("/Users/ebolee/repo/code_challenge/py-mini-apps")
+filename = "image.jpg"
 
 try:
-    img = Image.open(path)
+    img = Image.open(filename)
 except IOError:
     print(IOError.errno)
 # Use the above statement within try block, as it can
@@ -19,7 +20,7 @@ except IOError:
 def rotate():
     try:
         # Relative Path
-        img = Image.open("../py-mini-apps-files/image.jpg")
+        img = Image.open("image.jpg")
 
         # Angle given
         img = img.rotate(180)
@@ -34,7 +35,7 @@ def rotate():
 def crop():
     try:
         # Relative Path
-        img = Image.open("../py-mini-apps-files/image.jpg")
+        img = Image.open("image.jpg")
         width, height = img.size
 
         area = (0, 0, width / 2, height / 2)
@@ -50,10 +51,10 @@ def crop():
 def resize():
     try:
         # Relative Path
-        img = Image.open("../py-mini-apps-files/image.jpg")
+        img = Image.open("image.jpg")
         width, height = img.size
 
-        img = img.resize((width / 2, height / 2))
+        img = img.resize((int(width / 2), int(height / 2)))
 
         # Saved in the same relative location
         img.save("resized_picture.jpg")
@@ -65,11 +66,11 @@ def paste():
     try:
         # Relative Path
         # Image on which we want to paste
-        img = Image.open("../py-mini-apps-files/image.jpg")
+        img = Image.open("image.jpg")
 
         # Relative Path
         # Image which we want to paste
-        img2 = Image.open("../py-mini-apps-files/image2.jpeg")
+        img2 = Image.open("image2.jpeg")
         img.paste(img2, (50, 50))
 
         # Saved in the same relative location
@@ -82,7 +83,7 @@ def paste():
 def histogram():
     try:
         # Relative Path
-        img = Image.open("../py-mini-apps-files/image.jpg")
+        img = Image.open("image.jpg")
 
         # Getting histogram of image
         print(img.histogram())
@@ -94,7 +95,7 @@ def histogram():
 def transposed():
     try:
         # Relative Path
-        img = Image.open("../py-mini-apps-files/image.jpg")
+        img = Image.open("image.jpg")
 
         # transposing image
         transposed_img = img.transpose(Image.FLIP_LEFT_RIGHT)
@@ -108,7 +109,7 @@ def transposed():
 def to_rgb():
     try:
         # Relative Path
-        img = Image.open("../py-mini-apps-files/image.jpg")
+        img = Image.open("image.jpg")
 
         # splitting the image
         print(img.split())
@@ -119,7 +120,7 @@ def to_rgb():
 def tobitmap():
     try:
         # Relative Path
-        img = Image.open("../py-mini-apps-files/image.jpg")
+        img = Image.open("image.jpg")
         print(img.mode)
         # converting image to bitmap
         print(img.tobitmap())
@@ -131,7 +132,7 @@ def tobitmap():
 def to_thumbnail():
     try:
         # Relative Path
-        img = Image.open("../py-mini-apps-files/image.jpg")
+        img = Image.open("image.jpg")
 
         # In-place modification
         img.thumbnail((200, 200))

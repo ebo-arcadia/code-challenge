@@ -21,7 +21,7 @@ import cartopy.feature as cfeature
 
 # PART (1/5): Latitude and Longitude
 
-birddata = pd.read_csv("../py-mini-apps-files/bird_tracking.csv")
+birddata = pd.read_csv("../python-mini-apps-file/bird_tracking.csv")
 bird_names = pd.unique(birddata.bird_name)
 
 # storing the indices of the bird Eric
@@ -46,7 +46,7 @@ plt.show()
 # PART (2/5): 2D Speed Vs Frequency
 # In this second part of the case study, we are going to visualize 2D speed vs Frequency for the gull named “Eric”.
 
-birddata = pd.read_csv("../py-mini-apps-files/bird_tracking.csv")
+birddata = pd.read_csv("../python-mini-apps-file/bird_tracking.csv")
 bird_names = pd.unique(birddata.bird_name)
 
 # storing the indices of the bird Eric
