@@ -1,7 +1,7 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, url_for, redirect
 from flask_cors import CORS
 import requests
-from markupsafe import escape
+# from markupsafe import escape
 
 app = Flask(__name__, template_folder='templates')
 CORS(app)
@@ -9,15 +9,15 @@ CORS(app)
 
 @app.route('/')
 def greeting():
-    return render_template("todo.html")
+    return render_template("base.html")
 
 
-@app.route('/user/<username>')
+@app.route('/user/<username>/')
 def display_user(username):
-    return "<h1>Welcome, </h1>" + f'{escape(username)}' + "!"
+    return render_template('user.html', username=username)
 
 
-@app.route('/todos/<int:todo_id>', methods=['GET', 'POST'])
+@app.route('/todos/<int:todo_id>/', methods=['GET', 'POST'])
 def get_or_post_todo(todo_id):
     if request.method == 'GET':
         api_url = "https://jsonplaceholder.typicode.com/todos/" + f'{todo_id}'
@@ -42,13 +42,13 @@ countries = [
 def _find_next_id():
     return max(country["id"] for country in countries) + 1
 
-@app.get("/countries")
+@app.get("/countries/")
 def get_countries():
     # return countries
     # this line works too as Flask automatically convert python list to json but not lists
     return jsonify(countries)
 
-@app.post("/countries")
+@app.post("/countries/")
 def add_country():
     if request.is_json:
         country = request.get_json()
