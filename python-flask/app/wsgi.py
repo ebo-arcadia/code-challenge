@@ -1,15 +1,30 @@
-from flask import Flask, request, render_template, jsonify, url_for, redirect
+from flask import Flask, request, render_template, jsonify, Blueprint
 from flask_cors import CORS
 import requests
-# from markupsafe import escape
 
+blue_print = Blueprint("root", __name__)
 app = Flask(__name__, template_folder='templates')
 CORS(app)
 
 
+@blue_print.route('/engine/<int:year>')
+def engine(year=None):
+    return "what year of this car? it is a {year} year model".format(year=year)
+
+
+@blue_print.route('/color')
+def color():
+    return "this car has a color"
+
+
+app.register_blueprint(blue_print, name="honda", url_prefix="/honda")
+app.register_blueprint(blue_print, name="nissan", url_prefix="/nissan")
+app.register_blueprint(blue_print, name="toyota", url_prefix="/toyota")
+
+
 @app.route('/')
 def greeting():
-    return render_template("base.html")
+    return render_template('base.html')
 
 
 @app.route('/user/<username>/')
