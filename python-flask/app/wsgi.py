@@ -2,24 +2,30 @@ from flask import Flask, request, render_template, jsonify, Blueprint
 from flask_cors import CORS
 import requests
 
-blue_print = Blueprint("root", __name__)
+investment_products = Blueprint("investment_products", __name__)
+
 app = Flask(__name__, template_folder='templates')
 CORS(app)
 
 
-@blue_print.route('/engine/<int:year>')
-def engine(year=None):
-    return "what year of this car? it is a {year} year model".format(year=year)
+@investment_products.route('/value/<int:price>')
+def value(price=None):
+    return "the price of this investment product is ${price} per share".format(price=price)
 
 
-@blue_print.route('/color')
-def color():
-    return "this car has a color"
+@investment_products.route('/marketcap/<int:marketcap>')
+def cap(marketcap=None):
+    return "market cap is ${marketcap} per share".format(marketcap=marketcap)
 
 
-app.register_blueprint(blue_print, name="honda", url_prefix="/honda")
-app.register_blueprint(blue_print, name="nissan", url_prefix="/nissan")
-app.register_blueprint(blue_print, name="toyota", url_prefix="/toyota")
+@investment_products.route('/exchange/<string:exchange>')
+def cryptocurrency(exchange=None):
+    return "This cryptocurrency is traded on {exchange}.".format(exchange=exchange)
+
+
+app.register_blueprint(investment_products, name="stock", url_prefix="/stock")
+app.register_blueprint(investment_products, name="bond", url_prefix="/bond")
+app.register_blueprint(investment_products, name="cryptocurrency", url_prefix="/cryptocurrency")
 
 
 @app.route('/')
