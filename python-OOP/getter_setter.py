@@ -3,6 +3,12 @@ import math
 
 class Circle:
     def __init__(self, val, prop='r'):
+        """Create a circle based on a radius, diameter, circumference, or area
+        Keyword arguments:
+        val (float) --the value of prop prop (str)
+        --'r' : radius (default) --'d' : diameter
+        --'c' : circumference --'a' : area
+        """
         if prop == 'r':
             self.set_radius(val)
         elif prop == 'd':
@@ -15,6 +21,7 @@ class Circle:
             raise Exception('prop must be r, d, c, or a')
 
     def set_radius(self, r):
+        """sets _radius, _diameter, _circumference, and _area of circle object"""
         self._radius = r
         self._diameter = r * 2
         self._circumference = r * 2 * math.pi
