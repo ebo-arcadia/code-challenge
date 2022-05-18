@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, text
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, text, ForeignKey
 from sqlalchemy.sql import select, alias
 from sqlalchemy.sql.expression import update
 
@@ -31,9 +31,9 @@ connection.execute(students.insert(), [
 
 
 # query db using select()
-students = students.select()
+students_obj = students.select()
 db_connection = engine.connect()
-select_result = db_connection.execute(students)
+select_result = db_connection.execute(students_obj)
 
 for row in select_result:
     print(row, sep=" ")
@@ -69,9 +69,63 @@ updated_students_obj = students.select()
 update_students = db_connection.execute(updated_students_obj).fetchall()
 print(update_students)
 
-print("--------------")
-print("update column with update() method")
-update_column = update(students).where(students.c.name == "Ravi").values(name="Snake")
+print("-----verify if name is updated---------")
+updated_students_obj = students.select()
+updated_result = db_connection.execute(updated_students_obj)
+
+for st in updated_result:
+    print(st)
+
+print("----delete all students using delete() object")
+if updated_students_obj is not None:
+    delete_all = students.delete()
+    db_connection.execute(delete_all)
+else:
+    insert_result = db_connection.execute(students_to_inserts)
+    connection.execute(students.insert(), [
+        {'name': 'Rajiv', 'lastname': 'Khanna'},
+        {'name': 'Komal', 'lastname': 'Bhandari'},
+        {'name': 'Abdul', 'lastname': 'Sattar'},
+        {'name': 'Priya', 'lastname': 'Rajhans'},
+    ])
+    print("--------------")
+    print("update column with update() method")
+    update_column = update(students).where(students.c.lastname == "Sattar").values(lastname="Penitentiary House")
+    print(update_students)
+
+
+# using multiple tables
+# creating database
+vg_db_engine = create_engine('sqlite:///vanguard.db', echo=True)
+tb_metadata = MetaData()
+
+advisor = Table(
+    'advisors', tb_metadata,
+    Column('portId', Integer, primary_key=True),
+    Column('identifier', String),
+    Column('content', String),
+)
+
+fund = Table(
+    'funds', tb_metadata,
+    Column('fundId', Integer, primary_key=True),
+    Column('advisor_id', Integer, ForeignKey('advisors.portId')),
+    Column('value', Integer),
+)
+
+tb_metadata.create_all(vg_db_engine)
+
+# insert rows in the tables
+vg_db_connection = vg_db_engine.connect()
+vg_db_connection.execute(advisor.insert(), [
+    {'identifier': 'personal all weather', 'content': 'most popular portfolio'},
+    {'identifier': 'IVY', 'content': 'balanced long term allocation'},
+])
+
+vg_db_connection.execute(fund.insert(), [
+    {'advisor_id': 1, 'value': 2000},
+    {'advisor_id': 2, 'value': 123},
+])
 
 
 
