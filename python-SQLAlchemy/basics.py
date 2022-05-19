@@ -29,7 +29,6 @@ connection.execute(students.insert(), [
     {'name': 'Priya', 'lastname': 'Rajhans'},
 ])
 
-
 # query db using select()
 students_obj = students.select()
 db_connection = engine.connect()
@@ -47,7 +46,6 @@ text_query_result = db_connection.execute(sql_query_text)
 
 for row in text_query_result:
     print(row, sep=" ")
-
 
 text_obj = text("select students.name, students.lastname from students where students.name between :x and :y")
 db_connection.execute(text_obj, x='A', y='L').fetchall()
@@ -93,20 +91,19 @@ else:
     update_column = update(students).where(students.c.lastname == "Sattar").values(lastname="Penitentiary House")
     print(update_students)
 
-
 # using multiple tables
 # creating database
 vg_db_engine = create_engine('sqlite:///vanguard.db', echo=True)
 tb_metadata = MetaData()
 
-advisor = Table(
+advisors = Table(
     'advisors', tb_metadata,
     Column('portId', Integer, primary_key=True),
     Column('identifier', String),
     Column('content', String),
 )
 
-fund = Table(
+funds = Table(
     'funds', tb_metadata,
     Column('fundId', Integer, primary_key=True),
     Column('advisor_id', Integer, ForeignKey('advisors.portId')),
@@ -117,18 +114,48 @@ tb_metadata.create_all(vg_db_engine)
 
 # insert rows in the tables
 vg_db_connection = vg_db_engine.connect()
-vg_db_connection.execute(advisor.insert(), [
+vg_db_connection.execute(advisors.insert(), [
     {'identifier': 'personal all weather', 'content': 'most popular portfolio'},
     {'identifier': 'IVY', 'content': 'balanced long term allocation'},
 ])
 
-vg_db_connection.execute(fund.insert(), [
+vg_db_connection.execute(funds.insert(), [
     {'advisor_id': 1, 'value': 2000},
     {'advisor_id': 2, 'value': 123},
 ])
 
+# fetch data from the two tables
+fetch_stmt = select([advisors, funds]).where(advisors.c.portId == funds.c.advisor_id)
+fetch_data = vg_db_connection.execute(fetch_stmt)
+
+for row in fetch_data:
+    print(row)
+
+# update multiple tables using update() object and from and where clauses
+
+vg_db_connection.execute(advisors.insert(), [
+    {'identifier': 'conservative', 'content': '70% bond & 30% stocks'},
+])
+vg_db_connection.execute(funds.insert(), [
+    {'advisor_id': 3, 'value': 999},
+])
+
+update_stmt = advisors.update().where(advisors.c.identifier == 'conservative') \
+    .values(identifier='safe heaven') \
+    .where(advisors.c.portId == select([funds.c.value])
+           .where(funds.c.advisor_id == advisors.c.portId)
+           .as_scalar()
+           )
+
+update_execution = vg_db_connection.execute(update_stmt)
+
+# fetch data from the two tables to verify update
+fetch_stmt_after_update = select([advisors, funds]).where(advisors.c.portId == funds.c.advisor_id)
+fetch_data_with_update = vg_db_connection.execute(fetch_stmt_after_update)
+
+print("----fetch data to verify update-----")
+for row in update_execution:
+    print(row)
 
 
-
-
-
+print("-------end of update multi tables execution------")
