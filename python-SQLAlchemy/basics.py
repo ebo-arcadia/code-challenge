@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, text, ForeignKey
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, text, ForeignKey, join
 from sqlalchemy.sql import select, alias
 from sqlalchemy.sql.expression import update
 
@@ -154,8 +154,50 @@ fetch_stmt_after_update = select([advisors, funds]).where(advisors.c.portId == f
 fetch_data_with_update = vg_db_connection.execute(fetch_stmt_after_update)
 
 print("----fetch data to verify update-----")
-for row in update_execution:
+for row in fetch_data_with_update:
     print(row)
 
-
 print("-------end of update multi tables execution------")
+
+another_update_stmt = (
+    advisors.update()
+        .where(advisors.c.identifier == "conservative")
+        .values(identifier="saver")
+    # .returning(advisors.c.identifier, advisors.c.content)
+)
+
+print(another_update_stmt)
+vg_db_connection.execute(another_update_stmt)
+
+print("------update table using preserve parameter order-----")
+
+update_stmt_with_param_order = (
+    funds.update().ordered_values((funds.c.value, 150000))
+)
+
+print(update_stmt_with_param_order)
+vg_db_connection.execute(update_stmt_with_param_order)
+
+print("--------using join---------")
+j1 = advisors.join(funds)
+print(j1)
+j2 = advisors.join(funds, advisors.c.portId == funds.c.advisor_id)
+print(j2)
+join_stmt = select([advisors]).select_from(j1)
+print(join_stmt)
+join_result = vg_db_connection.execute(join_stmt).fetchall()
+print(join_result)
+
+
+# clean up!!!
+print("------delete tables---------")
+delete_advisors_tb_stmt = advisors.delete()
+delete_funds_tb_stmt = funds.delete()
+if advisors is not None:
+    vg_db_connection.execute(delete_advisors_tb_stmt)
+else:
+    pass
+if funds is not None:
+    vg_db_connection.execute(delete_funds_tb_stmt)
+else:
+    pass
