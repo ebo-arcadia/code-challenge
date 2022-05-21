@@ -1,4 +1,7 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, text, ForeignKey, join
+from sqlalchemy import create_engine, \
+    MetaData, Table, Column, Integer, \
+    String, text, ForeignKey, join, \
+    and_, or_, asc, desc, between, func
 from sqlalchemy.sql import select, alias
 from sqlalchemy.sql.expression import update
 
@@ -188,16 +191,69 @@ print(join_stmt)
 join_result = vg_db_connection.execute(join_stmt).fetchall()
 print(join_result)
 
+print("--------using and_() function to produce conjunctions of expressions joined by AND -------")
+query_with_and = select([advisors]).where(and_(advisors.c.portId < 6, advisors.c.identifier == "IVY", advisors.c.portId == 5))
+result_with_and = vg_db_connection.execute(query_with_and).fetchall()
+print(result_with_and)
+
+print("-----using or_() function to produce conjunctions of expression joined by OR ------")
+query_with_or = select([advisors]).where(or_(advisors.c.content == "most popular portfolio", advisors.c.content == "xxx"))
+result_with_or = vg_db_connection.execute(query_with_or).fetchall()
+print(result_with_or)
+
+print("----using asc() function to produce an ascending order_by clause----")
+asc_order_by_stmt = select([advisors]).order_by(asc(advisors.c.identifier))
+result_with_order_by_asc = vg_db_connection.execute(asc_order_by_stmt)
+
+for row in result_with_order_by_asc:
+    print(row)
+
+print("----using desc() function to produce an descend order_by clause-----")
+desc_order_by_stmt = select([advisors]).order_by(desc(advisors.c.content))
+result_with_order_by_desc = vg_db_connection.execute(desc_order_by_stmt)
+
+for row in result_with_order_by_desc:
+    print(row)
+
+print("----using between() function to produce a BETWEEN predicate clause to validate if column value fall in a range---")
+between_stmt = select([advisors]).where(between(advisors.c.portId,1,3))
+between_result = vg_db_connection.execute(between_stmt).fetchall()
+
+for row in between_result:
+    print(row)
+
+print("----generic function or function passing parameters--------")
+# how to implement/ render a generic function such as now()?
+# functions are implemented by the usage of the func key word imported from sql-alchemy library
+print("--------")
+print("---using now()---")
+generic_func_now_stmt = vg_db_connection.execute(select([func.now()])).fetchone()
+print(generic_func_now_stmt)
+print("--------")
+print("---using count()---")
+func_count_stmt = vg_db_connection.execute(select([func.count(advisors.c.portId)])).fetchone()
+print(func_count_stmt)
+
+print("---using max, min, avg functions ----")
+# are these functions generic or requires parameters?
+# rendered by the usage of func keyword
+max_stmt = vg_db_connection.execute(select([func.max(advisors.c.portId).label("max_port_id")])).fetchone()
+print(max_stmt)
+min_stmt = vg_db_connection.execute(select([func.min(advisors.c.portId).label("min_port_id")])).fetchone()
+print(min_stmt)
+avg_stmt = vg_db_connection.execute(select([func.avg(advisors.c.portId).label("average_port_id")])).fetchone()
+print(avg_stmt)
+
 
 # clean up!!!
 print("------delete tables---------")
 delete_advisors_tb_stmt = advisors.delete()
 delete_funds_tb_stmt = funds.delete()
-if advisors is not None:
-    vg_db_connection.execute(delete_advisors_tb_stmt)
-else:
-    pass
-if funds is not None:
-    vg_db_connection.execute(delete_funds_tb_stmt)
-else:
-    pass
+# if advisors is not None:
+#     vg_db_connection.execute(delete_advisors_tb_stmt)
+# else:
+#     pass
+# if funds is not None:
+#     vg_db_connection.execute(delete_funds_tb_stmt)
+# else:
+#     pass
