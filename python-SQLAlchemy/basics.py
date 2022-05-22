@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, \
     MetaData, Table, Column, Integer, \
     String, text, ForeignKey, join, \
-    and_, or_, asc, desc, between, func
+    and_, or_, asc, desc, between, func, union, union_all, except_, except_all
 from sqlalchemy.sql import select, alias
 from sqlalchemy.sql.expression import update
 
@@ -243,6 +243,16 @@ min_stmt = vg_db_connection.execute(select([func.min(advisors.c.portId).label("m
 print(min_stmt)
 avg_stmt = vg_db_connection.execute(select([func.avg(advisors.c.portId).label("average_port_id")])).fetchone()
 print(avg_stmt)
+
+
+print("------using set operator union_all function-------")
+stmt_1 = select([advisors]).where(advisors.c.portId < 3)
+stmt_2 = select([advisors]).where(advisors.c.portId == 5)
+union_all_stmt = union_all(stmt_1, stmt_2)
+union_result = vg_db_connection.execute(union_all_stmt).fetchall()
+
+for row in union_result:
+    print(row)
 
 
 # clean up!!!
