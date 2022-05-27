@@ -1,7 +1,8 @@
 from sqlalchemy import create_engine, \
     MetaData, Table, Column, Integer, \
     String, text, ForeignKey, join, \
-    and_, or_, asc, desc, between, func, union, union_all, except_, except_all
+    and_, or_, asc, desc, between, func, \
+    union, union_all, except_, intersect
 from sqlalchemy.sql import select, alias
 from sqlalchemy.sql.expression import update
 
@@ -245,13 +246,51 @@ avg_stmt = vg_db_connection.execute(select([func.avg(advisors.c.portId).label("a
 print(avg_stmt)
 
 
-print("------using set operator union_all function-------")
-stmt_1 = select([advisors]).where(advisors.c.portId < 3)
-stmt_2 = select([advisors]).where(advisors.c.portId == 5)
-union_all_stmt = union_all(stmt_1, stmt_2)
-union_result = vg_db_connection.execute(union_all_stmt).fetchall()
+print("------using set operator union function-------")
+print("----union() returns a compoundSelect object from multiple tables----")
+stmt_1 = select([advisors]).where(advisors.c.portId < 10)
+stmt_2 = select([advisors]).where(advisors.c.identifier == "IVY")
+union_stmt = union(stmt_1, stmt_2)
+union_result = vg_db_connection.execute(union_stmt).fetchall()
 
 for row in union_result:
+    print(row)
+
+
+print("-----using union_all without filtering out duplicates------")
+stmt_3 = select([advisors]).where(advisors.c.portId < 10)
+stmt_4 = select([advisors]).where(advisors.c.identifier == "IVY")
+union_all_stmt = union_all(stmt_3, stmt_4)
+union_all_result = vg_db_connection.execute(union_all_stmt).fetchall()
+
+for row in union_all_result:
+    print(row)
+
+
+print("----using except_() function to construct SQL except expression----")
+stmt_5 = except_(
+    advisors.select().where(advisors.c.portId > 4),
+    advisors.select().where(advisors.c.identifier == "saver")
+)
+
+except_result = vg_db_connection.execute(stmt_5).fetchall()
+
+for row in except_result:
+    print(row)
+
+
+print("----using intersect() to create object to execute intersect SQL expression to display common rows from two "
+      "select statement")
+
+stmt_6 = intersect(
+    advisors.select().where(advisors.c.portId > 20),
+    advisors.select().where(advisors.c.content == "most popular portfolio"),
+    advisors.select().where(advisors.c.identifier == "personal all weather")
+)
+
+intersect = vg_db_connection.execute(stmt_6).fetchall()
+
+for row in intersect:
     print(row)
 
 
