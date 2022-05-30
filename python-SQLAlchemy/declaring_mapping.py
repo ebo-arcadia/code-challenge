@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, and_, or_, ForeignKey
+from sqlalchemy import Column, Integer, String, and_, or_, ForeignKey, text
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Query
@@ -131,7 +131,6 @@ filtered_result_set = table_handler.query(Fund).filter(Fund.name.like('vanguard%
 for filtered_funds in filtered_result_set:
     print(filtered_funds.alternative_identifier, filtered_funds.name, filtered_funds.market_cap, filtered_funds.value)
 
-
 print('------apply filter operators-----')
 # what goes into filter()?
 # ==, !=, and_(), or_(), in_(), like(), etc
@@ -148,12 +147,14 @@ for fund in obj_to_retrieve_non_fidelity_funds:
     print(fund.alternative_identifier, fund.name)
 print('---------------')
 
-obj_to_retrieve_fidelity_and_crypto = table_handler.query(Fund).filter(and_(Fund.name.like('fidelity%'), Fund.name.like('crypto%')))
+obj_to_retrieve_fidelity_and_crypto = table_handler.query(Fund).filter(
+    and_(Fund.name.like('fidelity%'), Fund.name.like('crypto%')))
 print('result only contains fidelity and crypto')
 for fund in obj_to_retrieve_fidelity_and_crypto:
     print(fund.alternative_identifier, fund.name)
 
-obj_to_retrieve_vanguard_or_fidelity = table_handler.query(Fund).filter(or_(Fund.name.like('fidelity%'), Fund.name.like('vanguard%')))
+obj_to_retrieve_vanguard_or_fidelity = table_handler.query(Fund).filter(
+    or_(Fund.name.like('fidelity%'), Fund.name.like('vanguard%')))
 print('result only contains fidelity and crypto')
 for fund in obj_to_retrieve_vanguard_or_fidelity:
     print(fund.alternative_identifier, fund.name)
@@ -165,7 +166,6 @@ for fund in obj_to_retrieve_funds_in_altIds:
     print(fund.alternative_identifier, fund.name)
 print('---------------')
 
-
 print('------returning list immediately upon SQL execution-------')
 all_fidelity_funds = table_handler.query(Fund).filter(Fund.name.like('fidelity%')).all()
 print('------returns list of all fidelity funds-------')
@@ -175,9 +175,26 @@ for fund in all_fidelity_funds:
 print('---------------')
 print('-------using one() or scalar() to check no rows error-------')
 # check_if_rows_exist_in_sleeve_table = table_handler.query(Sleeve).one()
-only_one_sleeve = table_handler.query(Sleeve).scalar()
-print(only_one_sleeve.alternative_identifier, only_one_sleeve.fund_relationship, only_one_sleeve.name)
+# only_one_sleeve = table_handler.query(Sleeve).scalar()
+# print(only_one_sleeve.alternative_identifier, only_one_sleeve.fund_relationship, only_one_sleeve.name)
+
+print('------using text() construct to link SQL stmt to mapped ORM ----------')
+for textually_filtered_funds in table_handler.query(Fund).filter(text("alternative_identifier>2000")):
+    print(textually_filtered_funds.name, textually_filtered_funds.market_cap, textually_filtered_funds.value)
+
+print('---specify filtering with binding parameters when querying-----')
+find_one = table_handler.query(Fund).filter(text("alternative_identifier = :value").params(value=1040)).all()
+for fund in find_one:
+    print(fund.id, fund.alternative_identifier, fund.name, fund.value)
 
 
+print('----use from_statement to construct and execute entire string-based SQL statement-----')
+string_based__filter_fund = table_handler.query(Fund).from_statement(text("SELECT * FROM fund")).first()
+print(string_based__filter_fund.name, string_based__filter_fund.value)
 
 
+print('----passing columns expression as positional arguments-----')
+statement = text("SELECT alternative_identifier, name, market_cap, value FROM fund")
+statement = statement.columns(Fund.alternative_identifier, Fund.name)
+result = table_handler.query(Fund.alternative_identifier, Fund.name).from_statement(statement).first()
+print(result)
