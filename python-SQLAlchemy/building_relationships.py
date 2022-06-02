@@ -1,7 +1,8 @@
-from sqlalchemy import create_engine, ForeignKey, Column, Integer, String
+from sqlalchemy import create_engine, ForeignKey, Column, Integer, String, not_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import aliased
 from sqlalchemy.sql import func
 
 db_engine = create_engine('sqlite:///eip.db', echo=True)
@@ -37,7 +38,7 @@ add_one_advisor.funds = [Fund(name='vanguard S&P standard', type='stocks')]
 # insert via construct an advisor object providing mapped funds attribute in the constructor
 add_one_advisor_with_constructor = [
     Advisor(
-        name='Ada Wong', portfolio_identifier=1010, portfolio='Slack front-end developers', fee=850,
+        name='Ada Wong', portfolio_identifier=2010, portfolio='Slack front-end developers', fee=850,
         funds=[Fund(name='fidelity FTSE spartan growth', type='stocks'),
                Fund(name='vanguard treasury 30 years', type='bond'),
                Fund(name='vanguard treasury 30 years', type='bond'),
@@ -49,14 +50,14 @@ add_one_advisor_with_constructor = [
 # insert with a list of objects (multiple rows for the parent table)
 add_multiple_advisors = [
     Advisor(
-        name='Solid Snake', portfolio_identifier=2030, portfolio='HNS ER Doctor assistant group', fee=421,
+        name='Solid Snake', portfolio_identifier=3330, portfolio='HNS ER Doctor assistant group', fee=421,
         funds=[Fund(name='vanguard treasury 30 years', type='bond'),
                Fund(name='fidelity growth income', type='cryptocurrency'),
                Fund(name='fidelity blockchain new coins', type='cryptocurrency')]
     ),
 
     Advisor(
-        name='Mave Rick', portfolio_identifier=2110, portfolio='Air Force One secretary', fee=380,
+        name='Mave Rick', portfolio_identifier=4190, portfolio='Air Force One secretary', fee=380,
         funds=[Fund(name='vanguard gold and silver', type='commodity')]
     )
 ]
@@ -110,17 +111,55 @@ for advisor, fund_count in db_connector.query(Advisor, query_fund_stmt.c.fund_co
 # using common relational operators
 # find advisor with cryptocurrency type fund using relational operators
 
-print('----get advisor with cryptocurrency in many-to-one relational tables----')
-advisor_with_crypto = db_connector.query(Advisor).join(Fund).filter(Fund.type.__eq__('cryptocurrency'))
+print('------------------')
+print('----get advisor and funds from relational tables linked with foreign key 2------')
+fund_alias = aliased(Fund)
+# above aliased has no effect preventing cartesian warning nor does using the first filter
+advisor_with_crypto = db_connector.query(Advisor).filter(Advisor.id == fund_alias.id).filter(Fund.advisor_id.__eq__(2))
 for advisor_fund in advisor_with_crypto:
     for fund in advisor_fund.funds:
         print(advisor_fund.name, advisor_fund.fee, fund.name, fund.type)
 
 
-print('-----get advisor with fund that has advisor_id equal to 1 only-----')
-advisor_with_crypto = db_connector.query(Advisor).join(Fund).filter(Fund.advisor_id.__eq__(1))
+print('------------------')
+print('----get advisor and funds from relational tables linked with foreign key 3------')
+# __eq__ only works with many-to-one --> Fund.advisor_id
+advisor_with_crypto = db_connector.query(Advisor).join(Fund, Advisor.id == Fund.advisor_id).filter(Fund.advisor_id.__eq__(3))
 for advisor_fund in advisor_with_crypto:
     for fund in advisor_fund.funds:
         print(advisor_fund.name, advisor_fund.fee, fund.advisor_id, fund.name, fund.type)
 
 
+print('------------------')
+print('----get advisor and funds from relational tables linked NOT with foreign key 4------')
+# __ne__ only works with many-to-one --> Fund.advisor_id
+advisor_with_no_bond = db_connector.query(Advisor).join(Fund, Advisor.id == Fund.advisor_id).filter(Fund.advisor_id.__ne__(4)).group_by(Advisor.name)
+for advisor in advisor_with_no_bond:
+    for fund in advisor.funds:
+        print('advisor name: {}, fund name: {}, fund type: {}...'.format(advisor.name, fund.name, fund.type))
+
+
+# contains()
+print('------------------')
+print('-----find cryptocurrency that is not vanguard-----')
+vanguard_funds_only = db_connector.query(Fund).\
+    filter(Fund.type.contains("cryptocurrency")).\
+    filter(not_(Fund.name.contains("vanguard%")))
+
+for fund in vanguard_funds_only:
+    print(fund.name, fund.type, fund.advisor_id)
+
+# any()
+print('------------------')
+print('------find any advisor with fund type stocks-----')
+advisor_any_fund_cylinder = db_connector.query(Advisor).filter(Advisor.funds.any(Fund.type == 'stocks'))
+for advisor in advisor_any_fund_cylinder:
+    for fund in advisor.funds:
+        print(advisor.name, advisor.fee, fund.name, fund.type)
+
+# has()
+print('------------------')
+print('-----find fund and associate advisor with name Ada Wong----')
+fund_with_a_name = db_connector.query(Fund).filter(Fund.advisor.has(Advisor.name == 'Ada Wong'))
+for fund in fund_with_a_name:
+    print(fund.name, fund.type, fund.advisor_id, fund.advisor.name)
