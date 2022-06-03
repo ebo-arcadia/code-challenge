@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import aliased
 from sqlalchemy.sql import func
+from sqlalchemy.orm import subqueryload, selectinload, joinedload
 
 db_engine = create_engine('sqlite:///eip.db', echo=True)
 Base_for_table = declarative_base()
@@ -163,3 +164,51 @@ print('-----find fund and associate advisor with name Ada Wong----')
 fund_with_a_name = db_connector.query(Fund).filter(Fund.advisor.has(Advisor.name == 'Ada Wong'))
 for fund in fund_with_a_name:
     print(fund.name, fund.type, fund.advisor_id, fund.advisor.name)
+
+
+# relationship loading techniques
+# lazy loading
+# eager loading
+# no loading
+
+print('------eager loading-------')
+print('-----reduces queries save runtime-------')
+print('------load object of collections or scalar association upfront-------')
+print('-----return a particular advisor with associate funds using eager loading technique------')
+
+
+eager_load_advisor = db_connector.query(Advisor).\
+    options(subqueryload(Advisor.funds)).\
+    filter(Advisor.name == "Leon Kennedy")
+print(type(eager_load_advisor))
+for advisor in eager_load_advisor:
+    print('advisor name: {}; advisor fee: {}; advisor id: {};'.format(advisor.name, advisor.fee, advisor.id))
+    for fund in advisor.funds:
+        print("fund name: {}; fund type: {}. ".format(fund.name, fund.type))
+
+
+print('---use selectinload() to solve disadvantages of using subqueryload() technique----')
+eager_load_advisor_improved = db_connector.query(Advisor).\
+    options(selectinload(Advisor.funds)).\
+    filter(Advisor.name == "Leon Kennedy")
+
+print(type(eager_load_advisor_improved))
+
+for advisor in eager_load_advisor_improved:
+    print('advisor name: {}; advisor fee: {}; advisor id: {};'.format(advisor.name, advisor.fee, advisor.id))
+    for fund in advisor.funds:
+        print("fund name: {}; fund type: {}. ".format(fund.name, fund.type))
+
+
+print('-------------------------------------------')
+print('-----use joinedload eager loading technique-----')
+print('------used often for many-to-one relationship-----')
+joined_load_advisor = db_connector.query(Advisor).options(joinedload(Advisor.funds)).filter(Advisor.name == "Ada Wong")
+
+print(type(joined_load_advisor))
+
+for advisor in joined_load_advisor:
+    print('advisor name: {}; advisor fee: {}; advisor id: {};'.format(advisor.name, advisor.fee, advisor.id))
+    for fund in advisor.funds:
+        print("fund name: {}; fund type: {}. ".format(fund.name, fund.type))
+
