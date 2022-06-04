@@ -25,11 +25,11 @@ class Fund(Base_for_table):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     type = Column(String)
-    advisor_id = Column(Integer, ForeignKey('advisors.id'))
+    advisor_id = Column(Integer, ForeignKey('advisors.id', ondelete='CASCADE'))
     advisor = relationship('Advisor', back_populates='funds')
 
 
-Advisor.funds = relationship('Fund', order_by=Fund.id, back_populates='advisor')
+Advisor.funds = relationship('Fund', order_by=Fund.id, back_populates='advisor', cascade='all, delete-orphan')
 Base_for_table.metadata.create_all(db_engine)
 
 # insert data into the parent table
@@ -211,4 +211,28 @@ for advisor in joined_load_advisor:
     print('advisor name: {}; advisor fee: {}; advisor id: {};'.format(advisor.name, advisor.fee, advisor.id))
     for fund in advisor.funds:
         print("fund name: {}; fund type: {}. ".format(fund.name, fund.type))
+
+
+# delete operation
+# delete an object of a mapped class from a session and the commit the transaction
+# verify in the table
+# delete related object using cascade rules when defining the table
+
+# 1. select the row to delete
+# 2. delete the the row object
+# 3. commit the delete operation
+# 4. verify if the row is still in the table
+
+print('--------------------')
+print("------delete operation---------")
+# example: delete all advisor named Ada Wong
+advisor_ada_wong = db_connector.query(Advisor).get(2)
+db_connector.delete(advisor_ada_wong)
+db_connector.commit()
+ada_wong_advisor_count = db_connector.query(Advisor).filter_by(name='Ada Wong').count()
+print('how many advisor ada wong is left after deletion? ', ada_wong_advisor_count)
+
+ada_fund = db_connector.query(Fund).filter(Fund.advisor_id == 2).count()
+print('how many ada wong funds are left after deletion? ', ada_fund)
+
 
