@@ -41,14 +41,20 @@ b3 = Benchmark(name='benchmark bronze')
 s3 = Sleeve(name='sleeve cylinder')
 b3.sleeves.append(s3)
 
+<<<<<<< HEAD
 # above objects are in transient state saved in the memory only
 
+=======
+>>>>>>> 28af19b3b970c1d83f7130b05dfb670a32853b31
 # causing integrity error
 # s1.benchmarks.append(b1)
 # s2.benchmarks.append(b2)
 # s3.benchmarks.append(b3)
 
+<<<<<<< HEAD
 # cascading objects into session object
+=======
+>>>>>>> 28af19b3b970c1d83f7130b05dfb670a32853b31
 Session = sessionmaker(bind=db_engine)
 db_connector = Session()
 # db_connector.add(b1)
@@ -61,6 +67,7 @@ db_connector.add_all([b1, b2, b3])
 # db_connector.add(s3)
 db_connector.commit()
 
+<<<<<<< HEAD
 # query, loading and display data from the tables
 # get all the rows from the two tables
 for data in db_connector.query(Benchmark, Sleeve). \
@@ -76,3 +83,6 @@ for data in db_connector.query(Benchmark, Sleeve). \
 # each database requires a DBAPI wrapper; each wrapper requries a driver
 # SQL alchemy uses create_engine class to construct and passing parameters including username, DB names, etc
 
+=======
+# query and display data from the tables
+>>>>>>> 28af19b3b970c1d83f7130b05dfb670a32853b31
